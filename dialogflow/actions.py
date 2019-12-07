@@ -1,6 +1,7 @@
 import random
 from django.template.loader import render_to_string
 from .naver import 블로그_검색, 상한가_크롤링, 테마별_시세_크롤링
+from .weather import get_weather_data
 
 
 def search(search_engine, keyword):
@@ -15,7 +16,24 @@ def search(search_engine, keyword):
     return {'speech': speech}
 
 
+def weather_search(weather):
+    print(weather)
+    if weather == '오늘의 날씨':
+        result = get_weather_data()
+        speech = result.get("TMN")
+        
+    elif weather == '내일의 날씨':
+        speech = 내일날씨_크롤링()
+    
+    else:
+        speech = '{}는 지원하지 않습니다.',format(weather)
+    
+    return {'speech': speech}
+
+
 def stock_search(stock_search_term):
+    print("========================================")
+    print(stock_search_term)
     if stock_search_term == '상한가 종목':
         speech = 상한가_크롤링()
 

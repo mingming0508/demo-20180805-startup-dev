@@ -20,7 +20,7 @@ def fulfillment(request):
         params = request.JSON['queryResult']['parameters']
     except:
         print(request.JSON)
-    
+    print(request.JSON)
 
     action = getattr(actions, action_name, None)
     print(action)
