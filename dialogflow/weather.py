@@ -5,6 +5,7 @@ from selenium import webdriver
 import urllib
 import bs4
 import datetime
+import json
 
 load_wb = load_workbook('./dialogflow/location.xlsx', data_only=True)
 # load sheet name
@@ -70,8 +71,6 @@ def get_weather_data():
     data = urlopen(api_url).read().decode('utf8')
     data_json = json.loads(data)
 
-    print(data_json)
-
     parsed_json = data_json['response']['body']['items']['item']
 
     target_date = parsed_json[0]['fcstDate']  # get date and time
@@ -89,7 +88,8 @@ def get_weather_data():
         if one_parsed['fcstDate'] == date_calibrate and (
                 one_parsed['category'] == 'TMX' or one_parsed['category'] == 'TMN'):  # TMX, TMN at calibrated day
             passing_data[one_parsed['category']] = one_parsed['fcstValue']
-
+    
+    print('passing_data: ', passing_data)
     return passing_data
 
 # bool
@@ -97,25 +97,22 @@ find = 0
 
 
 # find x, y
-def location(update, context, text):
+def get_location(text):
     axis.clear()
     global find
     find = 0
-    length = len(text)
+    
+    text_list = text.split(' ')
+    length = len(text_list)
     # length - 1 == allList
     for l in allList:
-        if l[length - 1] == text[length - 1]:
+        if l[length - 1] == text_list[length - 1]:
             find = 1
             axis.append(l[3])
             axis.append(l[4])
-
-    if find == 0:
-        find_error(update, context)
-    else:
-        print(axis[0])
-        print(axis[1])
-        t = "If you want to know weather in there. Please enter /weather!"
-        context.bot.send_message(chat_id=update.message.chat_id, text=t)
+    
+    print(axis[0])
+    print(axis[1])
         
         
 # result = get_weather_data()
